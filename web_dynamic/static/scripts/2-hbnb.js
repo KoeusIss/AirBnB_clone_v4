@@ -1,12 +1,5 @@
 const $ = window.$;
 window.addEventListener('DOMContentLoaded', (event) => {
-  $.get('http://0.0.0.0:5001/api/v1/status/', (response) => {
-    if (response.status === "OK") {
-      $('DIV#api_status').addClass('available');
-    } else {
-      $('DIV#api_status').removeClass('available');
-    }
-  });
   const amenityDict = {};
   $('input[type=checkbox]').change(function () {
     if (this.checked) {
@@ -17,3 +10,14 @@ window.addEventListener('DOMContentLoaded', (event) => {
     $('.amenities h4').text(Object.values(amenityDict).join(', '));
   });
 });
+$.get('http://0.0.0.0:5001/api/v1/status/')
+  .done(function (response) {
+    if (response.status === 'OK') {
+      $('#api_status').addClass('available');
+    } else {
+      $('#api_status').removeClass('available');
+    }
+  })
+  .fail(function () {
+    $('#api_status').removeClass('available');
+  });
