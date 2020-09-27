@@ -1,5 +1,9 @@
 const $ = window.$;
 window.addEventListener('DOMContentLoaded', (event) => {
+  // clear checkbox in page reload
+  $('input[type="checkbox"]').each(function () {
+    $(this).prop('checked', false);
+  });
   const amenityDict = {};
   $('input[type=checkbox]').change(function () {
     if (this.checked) {
