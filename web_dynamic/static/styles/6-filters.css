@@ -81,6 +81,7 @@ button:hover {
 .locations .popover {
     margin-top: 0%;
 }
+
 .popover ul {
     list-style-type: none;
     padding-bottom: 10px;
@@ -92,7 +93,10 @@ button:hover {
 }
 .popover ul li input {
     margin-right: 10px;
+    float: left;
 }
+
+
 
 .popover ul h2{
     margin-top: 1.5%;
