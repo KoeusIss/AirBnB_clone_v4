@@ -4,16 +4,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
   $('input[type="checkbox"]').each(function () {
     $(this).prop('checked', false);
   });
-  // fill the checked boxes in object
-  const amenityDict = {};
-  $('input[type=checkbox]').change(function () {
-    if (this.checked) {
-      amenityDict[$(this).attr('data-id')] = $(this).attr('data-name');
-    } else {
-      delete amenityDict[$(this).attr('data-id')];
-    }
-    $('.amenities h4').text(Object.values(amenityDict).join(', '));
-  });
+
   // requests the server api status
   $.get('http://0.0.0.0:5001/api/v1/status/')
     .done(function (response) {
@@ -26,6 +17,54 @@ window.addEventListener('DOMContentLoaded', (event) => {
     .fail(function () {
       $('#api_status').removeClass('available');
     });
+
+  // ----------------------------------------------
+  // SETUP Amenities filter
+  // ----------------------------------------------
+
+  // fill the checked boxes in object
+  const amenityDict = {};
+  $('.amenities input[type=checkbox]').change(function () {
+    if (this.checked) {
+      amenityDict[$(this).attr('data-id')] = $(this).attr('data-name');
+    } else {
+      delete amenityDict[$(this).attr('data-id')];
+    }
+    $('.amenities h4').text(Object.values(amenityDict).join(', '));
+  });
+  // ----------------------------------------------
+  // SETUP States filter
+  // ----------------------------------------------
+
+  // fill the checked boxes in object
+  const statesDict = {};
+  $('.statebox').change(function () {
+    if (this.checked) {
+      console.log(statesDict)
+      statesDict[$(this).attr('data-id')] = $(this).attr('data-name');
+    } else {
+      delete statesDict[$(this).attr('data-id')];
+    }
+    const newList = $.merge(Object.values(statesDict), Object.values(citiesDict));
+    $('.locations h4').text(newList.join(', '));
+  });
+
+  // ----------------------------------------------
+  // SETUP Cities filter
+  // ----------------------------------------------
+
+  // fill the checked boxes in object
+  const citiesDict = {};
+  $('.citybox').change(function () {
+    if (this.checked) {
+      console.log(citiesDict)
+      citiesDict[$(this).attr('data-id')] = $(this).attr('data-name');
+    } else {
+      delete citiesDict[$(this).attr('data-id')];
+    }
+    const newList = $.merge(Object.values(statesDict), Object.values(citiesDict));
+    $('.locations h4').text(newList.join(', '));
+  });
   // retrieve all places from the api server on first page load
   $.ajax({
     type: 'POST',
@@ -38,12 +77,16 @@ window.addEventListener('DOMContentLoaded', (event) => {
     dataType: 'json',
     contentType: 'application/json'
   });
-  // retrieve places depends the list of picked amenities
+  // retrieve places depends the list of picked amenities, states and cities
   $('button').click(function () {
     $.ajax({
       type: 'POST',
       url: 'http://0.0.0.0:5001/api/v1/places_search/',
-      data: JSON.stringify({ "amenities": Object.keys(amenityDict) }),
+      data: JSON.stringify({
+        "amenities": Object.keys(amenityDict),
+        "states": Object.keys(statesDict),
+        "cities": Object.keys(citiesDict)
+      }),
       error: function (e) {
         console.log(e);
       },
@@ -78,4 +121,3 @@ window.addEventListener('DOMContentLoaded', (event) => {
     }
   };
 });
-
